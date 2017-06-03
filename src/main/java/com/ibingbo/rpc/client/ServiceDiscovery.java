@@ -38,13 +38,13 @@ public class ServiceDiscovery {
 
     public String discover() {
         String data = null;
-        int size = this.dataList.size();
+        int size = dataList.size();
         if (size > 0) {
             if (size == 1) {
-                data = this.dataList.get(0);
+                data = dataList.get(0);
                 LOGGER.debug("using only data: {}", data);
             } else {
-                data = this.dataList.get(ThreadLocalRandom.current().nextInt(size));
+                data = dataList.get(ThreadLocalRandom.current().nextInt(size));
                 LOGGER.debug("using random data: {}", data);
             }
         }
@@ -54,18 +54,18 @@ public class ServiceDiscovery {
     private ZooKeeper connectServer() {
         ZooKeeper zk = null;
         try {
-            zk = new ZooKeeper(this.registryAddress, Constant.ZK_SESSION_TIMEOUT, new Watcher() {
-                public void process(WatchedEvent watchedEvent) {
-                    if (watchedEvent.getState() == Event.KeeperState.SyncConnected) {
+            zk = new ZooKeeper(registryAddress, Constant.ZK_SESSION_TIMEOUT, new Watcher() {
+                public void process(WatchedEvent event) {
+                    if (event.getState() == Event.KeeperState.SyncConnected) {
                         latch.countDown();
                     }
                 }
             });
             latch.await();
         } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("", e);
         } catch (InterruptedException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("", e);
         }
         return zk;
     }
@@ -73,8 +73,8 @@ public class ServiceDiscovery {
     private void watchNode(final ZooKeeper zk) {
         try {
             List<String> nodeList = zk.getChildren(Constant.ZK_REGISTRY_PATH, new Watcher() {
-                public void process(WatchedEvent watchedEvent) {
-                    if (watchedEvent.getType() == Event.EventType.NodeChildrenChanged) {
+                public void process(WatchedEvent event) {
+                    if (event.getType() == Event.EventType.NodeChildrenChanged) {
                         watchNode(zk);
                     }
                 }
@@ -87,9 +87,10 @@ public class ServiceDiscovery {
             LOGGER.debug("node data: {}", dataList);
             this.dataList = dataList;
         } catch (KeeperException e) {
-            LOGGER.error(e.getMessage(), e);
+            e.printStackTrace();
+            LOGGER.error("", e);
         } catch (InterruptedException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("", e);
         }
     }
 }

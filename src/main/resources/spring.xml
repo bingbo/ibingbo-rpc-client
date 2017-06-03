@@ -1,24 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.2.xsd
 
-    <context:annotation-config></context:annotation-config>
-
-    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
-
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/jsp/"
-          p:suffix=".jsp"/>
-
-    <context:component-scan base-package="com.ibingbo.rpc.client"/>
+            http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <context:component-scan base-package="com.ibingbo.rpc"/>
     <context:property-placeholder location="classpath:config.properties"/>
+    <!-- 启用spring mvc 注解 -->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter"
+            />
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"
+            />
+        </mvc:message-converters>
+    </mvc:annotation-driven>
 
+
+    <!-- jsp作为模板引擎时的配置 -->
+    <bean
+            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix">
+            <value>/WEB-INF/jsp/</value>
+        </property>
+        <property name="suffix">
+            <value>.jsp</value>
+        </property>
+    </bean>
+
+    <!-- 配置服务发现组件 -->
     <bean id="serviceDiscovery" class="com.ibingbo.rpc.client.ServiceDiscovery">
         <constructor-arg name="registryAddress" value="${registry.address}"/>
     </bean>
 
-    <bean id="proxy" class="com.ibingbo.rpc.client.RpcProxy">
+    <!-- 配置 RPC 代理 -->
+    <bean id="rpcProxy" class="com.ibingbo.rpc.client.RpcProxy">
         <constructor-arg name="serviceDiscovery" ref="serviceDiscovery"/>
     </bean>
+
 </beans>

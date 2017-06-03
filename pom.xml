@@ -28,7 +28,7 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
-
+        <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
@@ -40,16 +40,24 @@
             <version>4.3.8.RELEASE</version>
         </dependency>
 
+        <!-- ZooKeeper -->
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
-            <version>3.4.10</version>
+            <version>3.5.3-beta</version>
         </dependency>
 
+        <!-- CGLib -->
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
-            <version>3.2.5</version>
+            <version>3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-base</artifactId>
+            <version>2.8.4</version>
         </dependency>
     </dependencies>
     <build>

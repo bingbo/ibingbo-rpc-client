@@ -5,6 +5,7 @@ import com.ibingbo.rpc.service.IHelloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Created by bing on 17/6/3.
@@ -13,22 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HelloController {
 
     @Autowired
-    private RpcProxy proxy;
+    private RpcProxy rpcProxy;
 
     @RequestMapping("/hello")
-    public void hello(String name) throws Exception {
-        IHelloService service = this.proxy.create(IHelloService.class);
+    @ResponseBody
+    public String hello(String name){
+        IHelloService service = rpcProxy.create(IHelloService.class);
         String result = service.hello(name);
         System.out.println(result);
-//        RpcClient client = new RpcClient("127.0.0.1", 8000);
-//        RpcRequest request = new RpcRequest();
-//        request.setRequestId(UUID.randomUUID().toString());
-//        request.setClassName("HelloService");
-//        request.setMethodName("hello");
-//        request.setParameterTypes(new Class<?>[]{String.class});
-//        request.setParameters(new Object[]{name});
-//        RpcResponse response = client.send(request);
-//        System.out.println(response.getResult());
+        return result;
     }
+
 }
 
